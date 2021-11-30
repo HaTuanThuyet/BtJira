@@ -2,12 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import reportWebVitals from './reportWebVitals';
+// SetUp redux
+import store from './redux/configStore'
+import {Provider} from'react-redux'
+import { BrowserRouter } from 'react-router-dom';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <BrowserRouter>
+   <Provider store={store}>
     <App />
-  </React.StrictMode>,
+  </Provider>
+  </BrowserRouter>,
+ 
+
+
   document.getElementById('root')
 );
 
