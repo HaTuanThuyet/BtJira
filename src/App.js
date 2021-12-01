@@ -45,7 +45,7 @@ function App() {
 
 
         <HomeTemPlace exact path="/home" Component={Home} />
-        <HomeTemPlace exact path="/" Component={Login} />
+        <UserLoginTemplate exact path="/" Component={Login} />
 
         <HomeTemPlace exact path="/about" Component={About} />
         <HomeTemPlace exact path="/contact" Component={Contact} />
