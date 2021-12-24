@@ -12,6 +12,15 @@ export const CyberbugsService = {
         })
 
     },
+    signupCyberBugs: (userSignup) => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Users/signup`,
+            method: 'POST',
+            data: userSignup
+
+        })
+
+    },
 
 
     getAllProjectCategory: () => {
@@ -54,6 +63,19 @@ export const CyberbugsService = {
     getListProjectSaga1: () => {
         return Axios({
             url: `${DOMAIN_CYBERBUG}/Project/getAllProject`,
+            method: 'GET',
+            headers: {
+
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `  ${TOKEN}`,
+            }
+
+
+        })
+    },
+    getListUserSaga: () => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Users/getUser`,
             method: 'GET',
             headers: {
 
@@ -107,24 +129,73 @@ export const CyberbugsService = {
         })
     },
     asignUserProject: (userProject) => {
-        // console.log('cyber', `${TOKEN}`);
-        // console.log('acess', localStorage.getItem(TOKEN1));
+     
         return Axios({
             url: `${DOMAIN_CYBERBUG}/Project/assignUserProject`,
             method: 'POST',
             data: userProject,
             headers: {
-
                 'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
-                'TokenCybersoft': `${TOKEN_CYBER}`
-
-
+                'TokenCybersoft': `${TOKEN}`
             },
 
         })
     },
+    removeUserFromProject: (userProject) => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Project/removeUserFromProject`,
+            method: 'POST',
+            data: userProject,
+            headers: {
 
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `${TOKEN}`,
+            }
+        })
+    },
+    getProjectDetail: (projectId) => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Project/getProjectDetail?id=${projectId}`,
+            method: 'GET',
+            headers: {
+       
+
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `${TOKEN}`,
+            }
+        })
+    },
+    getAllDetail: (projectId) => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Project/getAllProject`,
+            method: 'GET',
+            headers: {
+       
+
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `${TOKEN}`,
+            }
+        })
+    },
+    getUserByProjectId: (idProject) => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Users/getUserByProjectId?idProject=${idProject}`,
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `${TOKEN}`,
+       
+
+            }
+        })
+    },
 }
+
+
+                
+
+
+
 
 
 

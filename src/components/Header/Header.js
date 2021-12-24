@@ -21,6 +21,9 @@ export default function Header(props) {
                         <NavLink className="nav-link" to="/login"activeClassName="bg-white text-dark"activeStyle={{border:'1px solid red'}}>Login</NavLink>
                     </li>
                     <li className="nav-item">
+                        <NavLink className="nav-link" to="/signup"activeClassName="bg-white text-dark"activeStyle={{border:'1px solid red'}}>SignUp</NavLink>
+                    </li>
+                    <li className="nav-item">
                         <NavLink className="nav-link" to="/profile"activeClassName="bg-white text-dark"activeStyle={{border:'1px solid red'}}>ProFile</NavLink>
                     </li>
               
@@ -29,6 +32,10 @@ export default function Header(props) {
                         <div className="dropdown-menu" aria-labelledby="dropdownId">
                             <NavLink className="dropdown-item" to="/todolist">TodoList</NavLink>
                             <NavLink className="dropdown-item" to="/todolistrfc">TodoListRFC </NavLink>
+                            <NavLink className="dropdown-item" to="/dragdrop">DemoDragDrop </NavLink>
+                            <NavLink className="dropdown-item" to="/demodrapdropdnd">DragDropDND </NavLink>
+
+
                             {/* <NavLink className="dropdown-item" to="/hookredux">HookRedux </NavLink>
                             <NavLink className="dropdown-item" to="/formreact">HookForm </NavLink> */}
 

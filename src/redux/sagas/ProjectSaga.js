@@ -4,6 +4,10 @@ import { STATUS_CODE } from "../../util/constants/settingSystem";
 
 import { select } from 'redux-saga/effects'
 import { notifiFunction } from "../../util/Notification/notificationCyberbugs";
+import { number } from "yup/lib/locale";
+import { GET_ALL_PROJECT, GET_ALL_PROJECT_SAGA } from "../constants/ProjectConstants";
+import { GET_ALL_PRIORITY, GET_ALL_PRIORITY_SAGA } from "../constants/PriorityConstants";
+import { PriorityService } from "../../Pages/Services/PriorityService";
 
 
 
@@ -23,14 +27,16 @@ function* createProjectSaga(action) {
             CyberbugsService.createProject(action.newProject));
         console.log('data', data);
 
-        if (status = STATUS_CODE.SUCCESS) {
+        // if (status = STATUS_CODE.SUCCESS) {
             console.log(data);
 
             // history.push('/projectmanagement');
             let history = yield select(state => state.HistoryReducer.history)
             history.push('/projectmanagement');
 
-        }
+        // }
+        // let history = yield select(state => state.HistoryReducer.history)
+        // history.push('/projectmanagement');
         yield put({
             type: 'HIDE_LOADING'
         })
@@ -187,6 +193,89 @@ function* deleteProject(action) {
 export function* theoDoiDeleteProjectSaga() {
     yield takeLatest('DELETE_PROJECT_SAGA', deleteProject);
 }
+
+// Theo Doi GetProjectDetail
+function* getProjectDetailSaga(action) {
+    console.log("actionupdate", action.projectId);
+
+    // Hiển thị
+    // yield put({
+    //     type: "DISPLAY_LOADING"
+    // })
+    yield delay(500);
+
+    try {
+        const { data, status } = yield call(() => CyberbugsService.getProjectDetail(action.projectId.projectId));
+        console.log(data);
+        console.log(status);
+        yield put({
+            type: 'PUT_PROJECT_DETAIL',
+            projectDetail: data.content
+        })
+
+
+    } catch (error) {
+
+        console.log(error.response.data);
+        // History.push('/projectmanagement');
+
+    }
+    yield put({
+        type: 'HIDE_LOADING'
+    })
+}
+export function* theoDoiGetProjectDetail() {
+    yield takeLatest('GET_PROJECT_DETAIL', getProjectDetailSaga);
+}
+
+// GetAllProject
+function* getProjectAllSaga(action) {
+    // console.log("actionupdate", action.projectId);
+
+    // Hiển thị
+    // yield put({
+    //     type: "DISPLAY_LOADING"
+    // })
+    yield delay(500);
+
+    try {
+        const { data, status } = yield call(() => CyberbugsService.getAllDetail());
+        console.log(data);
+        console.log(status);
+        yield put({
+            type: GET_ALL_PROJECT,
+            arrrProject: data.content
+        })
+        yield put({
+            type: 'GET_USER_BY_PROJECT_ID_SAGA',
+            idProject: data.content[0]?.id
+        })
+
+    } catch (error) {
+
+        console.log(error.response.data);
+        // History.push('/projectmanagement');
+
+    }
+    yield put({
+        type: 'HIDE_LOADING'
+    })
+}
+export function* theoDoiGetAllProjectSaga() {
+    yield takeLatest(GET_ALL_PROJECT_SAGA, getProjectAllSaga);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

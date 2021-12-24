@@ -5,7 +5,7 @@ import { useSelector ,useDispatch} from 'react-redux';
 
 export default function ModalCyberbugs(props) {
 
-  const {visible,ComponentContentDrawer,callBackSubmit} = useSelector(state => state.drawerReducer);
+  const {visible,ComponentContentDrawer,callBackSubmit,title} = useSelector(state => state.drawerReducer);
   console.log('visible',visible);
   const dispatch = useDispatch()
 
@@ -29,7 +29,7 @@ export default function ModalCyberbugs(props) {
         <>
         
             <Drawer
-                title="Create a new account"
+                title={title}
                 width={720}
                 onClose={onClose}
                 visible={visible}

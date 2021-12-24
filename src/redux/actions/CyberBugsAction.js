@@ -10,3 +10,16 @@ export const signinCyberbugsAction = (email, password) => {
         }
     }
 }
+
+export const signupCyberbugsAction = (email, password,name,phoneNumber) => {
+    return {
+        type: 'USER_SIGNUP_SAGA',
+        userSignup: {
+            email: email,
+            password: password,
+            name:name,
+            phoneNumber:phoneNumber
+
+        }
+    }
+}

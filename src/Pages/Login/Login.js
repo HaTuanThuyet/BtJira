@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import { UserOutlined, LockOutlined, FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
 import { USER_SIGNIN_SAGA } from '../../redux/constants/Cyberbugs';
 import { signinCyberbugsAction } from '../../redux/actions/CyberBugsAction';
+import { NavLink } from 'react-router-dom';
 
 
 function Login(props) {
@@ -87,13 +88,19 @@ function Login(props) {
 
                     }
                 }}>Login</Button>
-                <div className="social mt-3 d-flex">
+                <div className="social mt-3 d-flex py-3">
                     <Button shape="circle" size={'large'} style={{ backgroundColor: 'rgb(59,89,152)' }}>
                         <span style={{ color: "#fff" }} className="font-weight-bold">F</span>
                     </Button>
                     <Button type="primary ml-3" shape="circle" icon={<TwitterOutlined />} size={'large'}></Button>
 
 
+                </div>
+                <div>
+                    
+                    <NavLink className="text-dark" to='./signup' activeClassName='active font-weight-boid'>
+                    <Button type="primary " size={'large'}  style={{ minWidth: 300, backgroundColor: 'rgb(102,117,223)', color: '#fff' }}>Sign Up</Button>
+                    </NavLink>
                 </div>
             </div>
 
@@ -138,7 +145,7 @@ const LoginCyberBugsWuthFormik = withFormik({
 
         // console.log(action);
         console.log(props);
-      
+
     },
 
 

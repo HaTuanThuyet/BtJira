@@ -1,7 +1,9 @@
 import { useSelector } from 'react-redux'
 import React from 'react'
+import ReactHtmlParser from 'react-html-parser'
 
-export default function Headermain() {
+export default function Headermain(props) {
+    const {projectDetail}= props;
     const userLogin=useSelector(state=>state.UserLoginCyberReducer.userLogin)
 
     return (
@@ -10,13 +12,16 @@ export default function Headermain() {
             <nav aria-label="breadcrumb">
                 <ol className="breadcrumb" style={{ backgroundColor: 'white' }}>
                     <li className="breadcrumb-item">Project</li>
-                    <li className="breadcrumb-item">Singularity 1.0</li>
+                    <li className="breadcrumb-item"> {userLogin?.name}</li>
                     <li className="breadcrumb-item active" aria-current="page">
                     {userLogin?.email}
                     </li>
                 </ol>
             </nav>
-            <h3> {userLogin?.name}</h3>
+            <h3> {projectDetail.projectName}</h3>
+            <section className="my-2">
+                {ReactHtmlParser(projectDetail.description)}
+            </section>
         </div>
     )
 }

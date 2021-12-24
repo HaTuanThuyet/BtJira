@@ -1,13 +1,47 @@
 import Axios from 'axios'
 import { fork, take, call, delay, takeEvery, takeLatest, put, select } from 'redux-saga/effects'
 import { CyberbugsService } from '../../Pages/Services/CyberbugsService';
-import { TOKEN, TOKEN1, USER_LOGIN } from '../../util/constants/settingSystem';
+import { STATUS_CODE, TOKEN, TOKEN1, USER_LOGIN } from '../../util/constants/settingSystem';
 import { USER_SIGNIN_SAGA, USLOGIN } from '../constants/Cyberbugs';
 
+// Đăng Ký
+function* signUpSaga(action) {
+    console.log(action);
+
+    yield put({
+        type: 'DISPLAY_LOADING'
+    })
+    yield delay(500);
+
+    // Gọi Api
+    try {
+        const { data, status } = yield CyberbugsService.signupCyberBugs(action.userSignup);
+        // Lưu vào Localstore
+        localStorage.setItem(TOKEN1, data.content.accessToken);
+        localStorage.setItem(USER_LOGIN, JSON.stringify(data.content));
+
+        yield put({
+            type: 'USSIGNUP',
+            userSignup: data.userSignup
+        })
+        let history = yield select(state => state.HistoryReducer.history)
+        history.push('/login');
+        // console.log(data);
+
+    } catch (er) {
+        console.log(er.response.data);
+    }
+    yield put({
+        type: 'HIDE_LOADING'
+    })
+}
+
+export function* theoDoiSignUp() {
+    yield takeLatest('USER_SIGNUP_SAGA', signUpSaga);
+}
 
 
-
-
+// Đăng Nhập
 function* signinSaga(action) {
     console.log(action);
 
@@ -28,7 +62,7 @@ function* signinSaga(action) {
             userLogin: data.userLogin
         })
         let history = yield select(state => state.HistoryReducer.history)
-        history.push('/cyberbugs');
+        history.push('/');
         // console.log(data);
 
     } catch (er) {
@@ -50,11 +84,11 @@ function* getUserSaga(action) {
     // Gọi Api
     try {
         const { data, status } = yield call(() => CyberbugsService.getUserProject(action.keyWord));
-        // console.log('data', data);
+        console.log('data', data);
         // console.log(status);
         yield put({
-            type:'GET_USER_SEARCH',
-            lstUserSearch:data.content
+            type: 'GET_USER_SEARCH',
+            lstUserSearch: data.content
         })
 
 
@@ -70,7 +104,7 @@ export function* theoDoGetUser() {
     yield takeLatest('GET_USER_API', getUserSaga);
 }
 
-// 
+// Add Project
 function* addUserProjectSaga(action) {
 
 
@@ -79,13 +113,12 @@ function* addUserProjectSaga(action) {
     try {
         const { data, status } = yield call(() => CyberbugsService.asignUserProject(action.userProject));
         console.log(status);
-        // em bị lỗi phần này action e clg ra có nhưng e post lên lại api thì k được
-        // e k pk bị lỗi sao e gữi tham số lên đúng yêu cầu trên api nhưng lại k đủ quyền truy cập,k pk e thiếu gì k nữa!!!
-      
+     
+
         yield put({
-            type:'GET_LIST_PROJECT_SAGA'
+            type: 'GET_LIST_PROJECT_SAGA'
         })
-          
+
 
 
 
@@ -100,3 +133,66 @@ export function* theoDoiAddUserProject() {
     yield takeLatest('ADD_USER_PROJECT_API', addUserProjectSaga);
 }
 
+//  Remove Project
+
+function* removeUserProjectSaga(action) {
+
+
+    // Gọi Api
+    console.log(action.userProject);
+    try {
+        const { data, status } = yield call(() => CyberbugsService.removeUserFromProject(action.userProject));
+        console.log(status);
+
+        yield put({
+            type: 'GET_LIST_PROJECT_SAGA'
+        })
+
+
+
+
+
+    } catch (er) {
+        console.log(er.response.data);
+    }
+
+}
+
+export function* theoDoiRemoveUserProject() {
+    yield takeLatest('REMOVE_USER_PROJECT_API', removeUserProjectSaga);
+}
+
+// GetUsserByProject
+function* getUserByProjectSaga(action) {
+
+    const { idProject } = action;
+    // Gọi Api
+
+    try {
+        const { data, status } = yield call(() => CyberbugsService.getUserByProjectId(action.idProject));
+        console.log(status);
+
+        yield put({
+            type: 'GET_USER_BY_PROJECT_ID',
+            arrUser: data.content
+        })
+
+
+
+
+
+    } catch (er) {
+        console.log(er.response?.data);
+        if(er.response?.data.stateCode === STATUS_CODE.NOT_FOUND){
+            yield put({
+                type: 'GET_USER_BY_PROJECT_ID',
+                arrUser: []
+            })
+        }
+    }
+
+}
+
+export function* theoDoigetUserByProjectSaga() {
+    yield takeLatest('GET_USER_BY_PROJECT_ID_SAGA', getUserByProjectSaga);
+}

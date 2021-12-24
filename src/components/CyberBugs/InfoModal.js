@@ -1,6 +1,131 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import ReactHtmlParser from 'react-html-parser'
+import { GET_ALL_STATUS_SAGA } from '../../redux/constants/StatusConstants';
+import { GET_ALL_PRIORITY_SAGA } from '../../redux/constants/PriorityConstants';
+import { GET_ALL_TASK_TYPE_SAGA } from '../../redux/constants/TaskTypeConstants';
+import { Editor } from '@tinymce/tinymce-react';
 
-export default function InfoModal() {
+export default function InfoModal(props) {
+    const { taskDetailModel } = useSelector(state => state.TaskReducer);
+    const { arrStatus } = useSelector(state => state.StatusReducer);
+    const { arrPriority } = useSelector(state => state.PriorityReducer);
+    const { arrTaskType } = useSelector(state => state.TaskTypeReducer);
+    const { projectDetail } = useSelector(state => state.ProjectReducer);
+    const { memberDetail } = props;
+    console.log('projectDetail123', projectDetail);
+
+    const [visibleEditor, setvisibleEditor] = useState(false);
+    const [historyContent, setHistoryContent] = useState(taskDetailModel.description);
+    const [content, setContent] = useState(taskDetailModel.description)
+
+
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch({ type: GET_ALL_STATUS_SAGA });
+        dispatch({ type: GET_ALL_PRIORITY_SAGA });
+        dispatch({ type: GET_ALL_TASK_TYPE_SAGA });
+
+
+    }, [])
+
+    console.log('taskDetailModal', taskDetailModel);
+    const renderDescription = () => {
+        const jsxDescription = ReactHtmlParser(taskDetailModel.description);
+        return <div>
+            {visibleEditor ? <div>   <Editor
+                name="description"
+
+                initialValue={taskDetailModel.description}
+                init={{
+                    height: 500,
+                    menubar: false,
+                    plugins: [
+                        'advlist autolink lists link image charmap print preview anchor',
+                        'searchreplace visualblocks code fullscreen',
+                        'insertdatetime media table paste code help wordcount'
+                    ],
+                    toolbar: 'undo redo | formatselect | ' +
+                        'bold italic backcolor | alignleft aligncenter ' +
+                        'alignright alignjustify | bullist numlist outdent indent | ' +
+                        'removeformat | help',
+                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                }}
+                onEditorChange={(content, editor) => {
+                    setContent(content);
+                }}
+            />
+                <button className='btn btn-primary m-2' onClick={() => {
+                    dispatch({
+                        type: 'HANDLE_CHANGE_POST_API',
+                        actionType: 'CHANGE_TASK_DETAIL',
+                        name: 'description',
+                        value: content
+                    })
+                    setvisibleEditor(false)
+                }}>Save</button>
+                <button className='btn btn-primary m-2' onClick={() => {
+                    dispatch({
+                        type: 'HANDLE_CHANGE_POST_API',
+                        actionType: 'CHANGE_TASK_DETAIL',
+                        name: 'description',
+                        value: historyContent
+                    })
+                    setvisibleEditor(false)
+                }}>Close</button>
+
+            </div> : <div onClick={() => {
+                setHistoryContent(taskDetailModel.description)
+                setvisibleEditor(!visibleEditor);
+            }}>{jsxDescription}</div>}
+
+
+        </div>
+    }
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        dispatch({
+            type: 'HANDLE_CHANGE_POST_API',
+            actionType: 'CHANGE_TASK_DETAIL',
+            name,
+            value
+        })
+    }
+    const renderTimeTracking = () => {
+        const { timeTrackingRemaining, timeTrackingSpent } = taskDetailModel;
+        const max = Number(timeTrackingRemaining) + Number(timeTrackingSpent);
+        const percent = Math.round(Number(timeTrackingSpent) / max * 100);
+        return <div>
+            <div style={{ display: 'flex' }}>
+                <i className="fa fa-clock" />
+                <div style={{ width: '100%' }}>
+
+                    <div className="progress">
+                        <div className="progress-bar" role="progressbar" style={{ width: percent }} aria-valuenow={Number(timeTrackingSpent)} aria-valuemin={Number(timeTrackingRemaining)} aria-valuemax={max} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <p className="logged">{Number(timeTrackingSpent)}h logged</p>
+                        <p className="estimate-time">{Number(timeTrackingRemaining)}h remaining</p>
+                    </div>
+                </div>
+
+            </div>
+            <div className='row'>
+
+                <div className="col-6">
+                    <input className='form-control' name='timeTrackingSpent' onChange={(e) => {
+                        handleChange(e)
+                    }} />
+                </div>
+                <div className='col-6'>
+                    <input className='form-control' name='timeTrackingRemaining' onChange={(e) => {
+                        handleChange(e)
+                    }} />
+                </div>
+            </div>
+        </div>
+    }
     return (
         <div>
             {/* Info Modal */}
@@ -10,7 +135,12 @@ export default function InfoModal() {
                         <div className="modal-header">
                             <div className="task-title">
                                 <i className="fa fa-bookmark" />
-                                <span>TASK-217871</span>
+                                <select name='typeId' value={taskDetailModel.typeId} onChange={handleChange}>
+                                    {arrTaskType?.map((tp, index) => {
+                                        return <option value={tp.id}>{tp.taskType}</option>
+                                    })}
+                                </select>
+                                <span>{taskDetailModel.taskName}</span>
                             </div>
                             <div style={{ display: 'flex' }} className="task-click">
                                 <div>
@@ -34,45 +164,15 @@ export default function InfoModal() {
                                         <p className="issue">This is an issue of type: Task.</p>
                                         <div className="description">
                                             <p>Description</p>
-                                            <p>
-                                                Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                                                Esse expedita quis vero tempora error sed reprehenderit
-                                                sequi laborum, repellendus quod laudantium tenetur nobis
-                                                modi reiciendis sint architecto. Autem libero quibusdam
-                                                odit assumenda fugiat? Beatae aliquid labore vitae
-                                                obcaecati sapiente asperiores quia amet id aut, natus quo
-                                                molestiae quod voluptas, temporibus iusto laudantium sit
-                                                tempora sequi. Rem, itaque id, fugit magnam asperiores
-                                                voluptas consectetur aliquid vel error illum, delectus eum
-                                                eveniet laudantium at repudiandae!
-                                            </p>
-                                        </div>
-                                        <div style={{ fontWeight: 500, marginBottom: 10 }}>
-                                            Jira Software (software projects) issue types:
-                                        </div>
-                                        <div className="title">
-                                            <div className="title-item">
-                                                <h3>BUG <i className="fa fa-bug" /></h3>
-                                                <p>
-                                                    A bug is a problem which impairs or prevents the
-                                                    function of a product.
-                                                </p>
-                                            </div>
-                                            <div className="title-item">
-                                                <h3>STORY <i className="fa fa-book-reader" /></h3>
-                                                <p>
-                                                    A user story is the smallest unit of work that needs to
-                                                    be done.
-                                                </p>
-                                            </div>
-                                            <div className="title-item">
-                                                <h3>TASK <i className="fa fa-tasks" /></h3>
-                                                <p>A task represents work that needs to be done</p>
-                                            </div>
+                                            {renderDescription()}
+
                                         </div>
                                         <div className="comment">
                                             <h6>Comment</h6>
                                             <div className="block-comment" style={{ display: 'flex' }}>
+
+
+
                                                 <div className="avatar">
                                                     <img src="https://i.ibb.co/7JM1P2r/picke-rick.jpg" alt />
                                                 </div>
@@ -116,69 +216,114 @@ export default function InfoModal() {
                                     <div className="col-4">
                                         <div className="status">
                                             <h6>STATUS</h6>
-                                            <select className="custom-select">
-                                                <option value={''} >SELECTED FOR DEVELOPMENT</option>
-                                                <option value={1}>One</option>
-                                                <option value={2}>Two</option>
-                                                <option value={3}>Three</option>
+                                            <select name='statusId' className="custom-select" value={taskDetailModel.statusId} onChange={(e) => {
+                                                handleChange(e);
+                                                const action = {
+                                                    type: 'UPDATE_TASK_STATUS_SAGA',
+                                                    taskStatusUpdate: {
+                                                        taskId: taskDetailModel.taskId,
+                                                        statusId: e.target.value,
+                                                        projectId: taskDetailModel.projectId
+                                                    }
+
+                                                }
+                                                dispatch(action)
+
+                                            }
+                                            }>
+                                                {arrStatus.map((status, index) => {
+                                                    return <option key={index} value={status.statusId}>{status.statusName}</option>
+                                                }
+
+
+                                                )}
                                             </select>
                                         </div>
                                         <div className="assignees">
                                             <h6>ASSIGNEES</h6>
-                                            <div style={{ display: 'flex' }}>
-                                                <div style={{ display: 'flex' }} className="item">
-                                                    <div className="avatar">
-                                                        <img src="https://i.ibb.co/7JM1P2r/picke-rick.jpg" alt />
-                                                    </div>
-                                                    <p className="name">
-                                                        Pickle Rick
-                                                        <i className="fa fa-times" style={{ marginLeft: 5 }} />
-                                                    </p>
-                                                </div>
-                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <div className='row'>
+                                                {
+                                                    taskDetailModel.assigness?.map((user, index) => {
+                                                        return <div className='col-6 mt-2 mb-2'>
+                                                            <div style={{ display: 'flex' }} className="item">
+
+                                                                <div className="avatar">
+                                                                    <img src={user?.avatar} alt />
+                                                                </div>
+                                                                <p className="name mt-1 ml-1">
+                                                                    {user?.name}
+
+                                                                    <span className='ml-1' style={{ cursor: 'pointer' }} onClick={() => {
+                                                                        dispatch({
+                                                                            type:'HANDLE_CHANGE_POST_API',
+                                                                            actionType: 'REMOVE_USER_ASSIGNESS',
+                                                                         
+                                                                            userId: user?.id
+                                                                        })
+                                                                    }}>X</span>
+
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    })
+                                                }
+
+                                                <div className='col-6 mt-2 mb-2'>
                                                     <i className="fa fa-plus" style={{ marginRight: 5 }} /><span>Add more</span>
+                                                    <select name='lstUser' className='form-control' onChange={(e) => {
+                                                        const value = e.target.value;
+                                                        let userSelect = projectDetail.members.find(mem => mem.userId == value);
+                                                        console.log('userSelect', userSelect);
+                                                        userSelect = { ...userSelect, id: userSelect?.userId }
+                                                        dispatch({
+                                                            type:'HANDLE_CHANGE_POST_API',
+                                                            actionType: 'CHANGE_ASSIGNNESS',
+                                                           
+                                                            userSelect
+                                                        })
+                                                    }}><option value={0}>Select User Assigness</option>
+                                                        {projectDetail.members?.filter(mem => {
+                                                            let index = taskDetailModel.assigness?.findIndex(us => us?.id === mem.userId);
+                                                            if (index !== -1) {
+                                                                return false;
+                                                            }
+                                                            return true;
+                                                        }).map((mem, index) => {
+                                                            return <option key={index} value={mem.userId}>{mem.name}</option>
+                                                        })}
+
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="reporter">
-                                            <h6>REPORTER</h6>
-                                            <div style={{ display: 'flex' }} className="item">
-                                                <div className="avatar">
-                                                    <img src="https://i.ibb.co/7JM1P2r/picke-rick.jpg" alt />
-                                                </div>
-                                                <p className="name">
-                                                    Pickle Rick
-                                                    <i className="fa fa-times" style={{ marginLeft: 5 }} />
-                                                </p>
-                                            </div>
-                                        </div>
+
                                         <div className="priority" style={{ marginBottom: 20 }}>
                                             <h6>PRIORITY</h6>
-                                            <select>
-                                                <option>Highest</option>
-                                                <option>Medium</option>
-                                                <option>Low</option>
-                                                <option>Lowest</option>
+                                            <select name='priorityId' className='form-control'
+                                                value={taskDetailModel.priorityId} onChange={(e) => {
+                                                    handleChange(e);
+                                                }}
+                                            >
+
+                                                {arrPriority.map((item, index) => {
+                                                    return <option key={index} value={item.priorityId}>{item.priority}</option>
+                                                })}
                                             </select>
+
+
                                         </div>
                                         <div className="estimate">
                                             <h6>ORIGINAL ESTIMATE (HOURS)</h6>
-                                            <input type="text" className="estimate-hours" />
+                                            <input name='originalEstimate' type="text" className="estimate-hours" value={taskDetailModel.originalEstimate} onChange={(e) => {
+                                                handleChange(e)
+                                            }} />
                                         </div>
                                         <div className="time-tracking">
                                             <h6>TIME TRACKING</h6>
-                                            <div style={{ display: 'flex' }}>
-                                                <i className="fa fa-clock" />
-                                                <div style={{ width: '100%' }}>
-                                                    <div className="progress">
-                                                        <div className="progress-bar" role="progressbar" style={{ width: '25%' }} aria-valuenow={25} aria-valuemin={0} aria-valuemax={100} />
-                                                    </div>
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                        <p className="logged">4h logged</p>
-                                                        <p className="estimate-time">12h estimated</p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {
+                                                renderTimeTracking()
+                                            }
+
                                         </div>
                                         <div style={{ color: '#929398' }}>Create at a month ago</div>
                                         <div style={{ color: '#929398' }}>Update at a few seconds ago</div>
