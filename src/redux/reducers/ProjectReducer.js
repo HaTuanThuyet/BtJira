@@ -6,6 +6,13 @@ const initialState = {
         "description": "string",
         "categoryId": "string"
     },
+    UserList: {
+        "id": 0,
+        "name": "string",
+        "email": 0,
+        "phoneNumber": "string",
+      
+    },
     projectDetail: {}
 }
 
@@ -19,6 +26,11 @@ export const ProjectReducer = (state = initialState, action) => {
         case 'PUT_PROJECT_DETAIL':{
             state.projectDetail = action.projectDetail
             return {...state}
+        }
+        case "EDIT_USSER": {
+            state.UserList = action.UserList;
+            return { ...state }
+
         }
 
 

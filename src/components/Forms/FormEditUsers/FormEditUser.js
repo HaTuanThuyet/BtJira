@@ -23,6 +23,7 @@ function FormEditUsers(props) {
 
     useEffect(() => {
         // Gọi api load project category
+      
        
         //   Load sự kiện submit lên drawar nút submit
         dispatch({
@@ -39,7 +40,7 @@ function FormEditUsers(props) {
                 <div className="col-6">
                     <div className="form=group">
                         <p className="font-weight-bold">User id</p>
-                        <input value={values.userId} disabled className="form-control" name="userId"></input>
+                        <input value={values.userId} disabled className="form-control" name="id"></input>
                     </div>
                 </div>
                 <div className="col-6">
@@ -106,10 +107,16 @@ const editUsersForm = withFormik({
 
     handleSubmit: (values, { props, setSubmitting }) => {
         console.log('valueww', values);
+        const id = values.userId
         // kHI NGƯỜI dùng bấm submit =>đưa dữ liệu về backend thông qua api
         const action = {
             type: 'UPDATE_USERS_SAGA',
-            usersUpdate: values
+            usersUpdate: {
+                id:values.userId,
+                name:values.name,
+                email:values.email,
+                phoneNumber:values.phoneNumber
+            }
         }
         props.dispatch(action)
 

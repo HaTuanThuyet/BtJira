@@ -49,6 +49,18 @@ export const TaskService = {
             }
         })
     },
+    commentTask: (taskCommentUpdate) => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Comment/insertComment`,
+            method: 'POST',
+            data:taskCommentUpdate,
+          
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `  ${TOKEN}`,
+            }
+        })
+    },
 }
 
 

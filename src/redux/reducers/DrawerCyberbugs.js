@@ -28,6 +28,10 @@ export const drawerReducer = (state = initialState, action) => {
         state.callBackSubmit =action.submitFunction
         return {...state}
     }
+    case 'SET_SUBMIT_EDIT_USERS':{
+        state.callBackSubmit =action.submitFunction
+        return {...state}
+    }
     case 'SET_SUBMIT_CREATE_TASK':{
         state.callBackSubmit =action.submitFunction
         return {...state}

@@ -65,6 +65,31 @@ export function* theoDoiUpdateTaskStatusSaga() {
 
 
 
+function* commentTaskSaga(action) {
+    const { taskCommentUpdate } = action;
+    console.log(action);
+    try {
+        const { data, status } = yield call(() => TaskService.commentTask(action?.taskCommentUpdate));
+        console.log('taskCommentUpdate', data)
+        // yield put({
+        //     type: 'GET_PROJECT_DETAIL',
+        //     projectId: taskStatusUpdate.projectId,
+
+        // })
+        // yield put({
+        //     type: 'GET_TASK_DETAIL_SAGA',
+        //     taskId: taskStatusUpdate.taskId,
+
+        // })
+    } catch (er) {
+        console.log(er.response.data)
+    }
+}
+export function* theoDoicommentTaskSaga() {
+    yield takeLatest('UPDATE_COMMENT_SAGA', commentTaskSaga);
+}
+
+
 // 
 function* handleChangePostApi(action) {
 

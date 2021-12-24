@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { Input } from 'antd';
 import ReactHtmlParser from 'react-html-parser'
 import { GET_ALL_STATUS_SAGA } from '../../redux/constants/StatusConstants';
 import { GET_ALL_PRIORITY_SAGA } from '../../redux/constants/PriorityConstants';
@@ -31,6 +32,34 @@ export default function InfoModal(props) {
     }, [])
 
     console.log('taskDetailModal', taskDetailModel);
+    const renderComment = () => {
+        return <div><Input placeholder="Add Comment" onChange={() => {
+            renderComment()
+
+        }} />
+            <button className='btn btn-primary m-2' onClick={() => {
+                const action = {
+                    type: 'UPDATE_COMMENT_SAGA',
+                    taskCommentUpdate: {
+                        taskId: taskDetailModel.taskId,
+                        contentComment:handChangeComment()
+
+                    }
+
+                }
+                dispatch(action)
+                setvisibleEditor(false)
+            }}>Save</button>
+            <button className='btn btn-primary m-2' onClick={() => {
+                dispatch({
+                    type: 'HANDLE_CHANGE_POST_API',
+                    actionType: 'CHANGE_TASK_DETAIL',
+                    name: 'description',
+                    value: historyContent
+                })
+                setvisibleEditor(false)
+            }}>Close</button></div>
+    }
     const renderDescription = () => {
         const jsxDescription = ReactHtmlParser(taskDetailModel.description);
         return <div>
@@ -88,9 +117,13 @@ export default function InfoModal(props) {
         dispatch({
             type: 'HANDLE_CHANGE_POST_API',
             actionType: 'CHANGE_TASK_DETAIL',
-            name,
-            value
+            name: name,
+            value: value
         })
+    }
+    const handChangeComment = (e) => {
+        const {  value } = e.target;
+      
     }
     const renderTimeTracking = () => {
         const { timeTrackingRemaining, timeTrackingSpent } = taskDetailModel;
@@ -169,23 +202,7 @@ export default function InfoModal(props) {
                                         </div>
                                         <div className="comment">
                                             <h6>Comment</h6>
-                                            <div className="block-comment" style={{ display: 'flex' }}>
-
-
-
-                                                <div className="avatar">
-                                                    <img src="https://i.ibb.co/7JM1P2r/picke-rick.jpg" alt />
-                                                </div>
-                                                <div className="input-comment">
-                                                    <input type="text" placeholder="Add a comment ..." />
-                                                    <p>
-                                                        <span style={{ fontWeight: 500, color: 'gray' }}>Protip:</span>
-                                                        <span>press
-                                                            <span style={{ fontWeight: 'bold', background: '#ecedf0', color: '#b4bac6' }}>M</span>
-                                                            to comment</span>
-                                                    </p>
-                                                </div>
-                                            </div>
+                                            <div> {renderComment()}</div>
                                             <div className="lastest-comment">
                                                 <div className="comment-item">
                                                     <div className="display-comment" style={{ display: 'flex' }}>
@@ -255,9 +272,9 @@ export default function InfoModal(props) {
 
                                                                     <span className='ml-1' style={{ cursor: 'pointer' }} onClick={() => {
                                                                         dispatch({
-                                                                            type:'HANDLE_CHANGE_POST_API',
+                                                                            type: 'HANDLE_CHANGE_POST_API',
                                                                             actionType: 'REMOVE_USER_ASSIGNESS',
-                                                                         
+
                                                                             userId: user?.id
                                                                         })
                                                                     }}>X</span>
@@ -276,9 +293,9 @@ export default function InfoModal(props) {
                                                         console.log('userSelect', userSelect);
                                                         userSelect = { ...userSelect, id: userSelect?.userId }
                                                         dispatch({
-                                                            type:'HANDLE_CHANGE_POST_API',
+                                                            type: 'HANDLE_CHANGE_POST_API',
                                                             actionType: 'CHANGE_ASSIGNNESS',
-                                                           
+
                                                             userSelect
                                                         })
                                                     }}><option value={0}>Select User Assigness</option>

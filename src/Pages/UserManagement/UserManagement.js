@@ -128,11 +128,11 @@ export default function UsersManagement(props) {
                             }
                             dispatch(action);
                             // dispatch dữ liệu hiện tại lên reducer
-                            const actionEditProject = {
-                                type: 'EDIT_PROJECT',
-                                projectEditModel: record
+                            const actionEditUser = {
+                                type: 'EDIT_USSER',
+                                UserList: record
                             }
-                            dispatch(actionEditProject);
+                            dispatch(actionEditUser);
                         }}>
                         <EditOutlined style={{ fontSize: 17 }} />
                     </button>
