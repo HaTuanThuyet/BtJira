@@ -61,6 +61,30 @@ export const TaskService = {
             }
         })
     },
+    getcomentTask: () => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Comment/getAll`,
+            method: 'GET',
+          
+          
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `  ${TOKEN}`,
+            }
+        })
+    },
+    deletecomentTask: (idComment) => {
+        return Axios({
+            url: `${DOMAIN_CYBERBUG}/Comment/deleteComment?idComment=${idComment}`,
+            method: 'DELETE',
+          
+          
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem(TOKEN1),
+                'TokenCybersoft': `  ${TOKEN}`,
+            }
+        })
+    },
 }
 
 

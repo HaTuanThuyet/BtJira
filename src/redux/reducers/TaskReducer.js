@@ -22,7 +22,9 @@ const initialState = {
                 "alias": "thong"
             }
         ],
-        "lstComment": [],
+        "lstComment": [
+
+        ],
         "taskId": 2122,
         "taskName": "test",
         "alias": "test",
@@ -36,31 +38,35 @@ const initialState = {
         "projectId": 2440
 
     }
-    
+
 }
 
 export const TaskReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'GET_TASK_DETAIL':{
-           
-           
-            return {...state,taskDetailModel:action.taskDetailModel};
+        case 'GET_TASK_DETAIL': {
+
+
+            return { ...state, taskDetailModel: action.taskDetailModel };
         }
-        case 'CHANGE_TASK_DETAIL':{
-            console.log('StateTasskDetail',state.taskDetailModel)
-            const {name,value}=action;
-            return {...state,taskDetailModel:{...state.taskDetailModel,
-                [name]:value}};
+        case 'CHANGE_TASK_DETAIL': {
+            console.log('StateTasskDetail', state.taskDetailModel)
+            const { name, value } = action;
+            return {
+                ...state, taskDetailModel: {
+                    ...state.taskDetailModel,
+                    [name]: value
+                }
+            };
         }
-        case 'CHANGE_ASSIGNNESS':{
-         state.taskDetailModel.assigness=[...state.taskDetailModel.assigness,action.userSelect]
-            return {...state};
+        case 'CHANGE_ASSIGNNESS': {
+            state.taskDetailModel.assigness = [...state.taskDetailModel.assigness, action.userSelect]
+            return { ...state };
         }
-        case 'REMOVE_USER_ASSIGNESS':{
-            state.taskDetailModel.assigness=[...state.taskDetailModel.assigness.filter(us => us.id !==action.userId)]
-               return {...state};
-           }
-            
+        case 'REMOVE_USER_ASSIGNESS': {
+            state.taskDetailModel.assigness = [...state.taskDetailModel.assigness.filter(us => us.id !== action.userId)]
+            return { ...state };
+        }
+      
 
 
 

@@ -9,7 +9,7 @@ export default function IndexCyberBugs(props) {
     const dispatch = useDispatch();
     console.log('projectDetail',projectDetail);
     useEffect(() => {
-        const projectId = props.match.params;
+    const projectId = props.match.params;
         dispatch({
             type:'GET_PROJECT_DETAIL',
             projectId

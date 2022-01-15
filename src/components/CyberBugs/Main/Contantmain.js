@@ -1,9 +1,11 @@
 import { result } from 'lodash';
 import React from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Contantmain(props) {
+    const { arrComent } = useSelector(state => state.CommentReducer);
+ 
     const { projectDetail } = props;
     const dispatch = useDispatch();
     const handleDragEnd = (result) => {
@@ -21,9 +23,9 @@ export default function Contantmain(props) {
         dispatch({
             type:'UPDATE_TASK_STATUS_SAGA',
             taskStatusUpdate: {
-                taskId: taskId,
+                "taskId": taskId,
                 statusId: destination.droppableId,
-                projectId: projectId
+                "projectId": projectId
             
             }
         })
@@ -43,7 +45,7 @@ export default function Contantmain(props) {
                                 key={index} className="list-group list-group-flush" style={{height:'auto'}}>
                                 {taskListDetail.lstTaskDeTail.map((task, index) => {
                                     return <Draggable key={task.taskId.toString()} index={index} draggableId={JSON.stringify({projectId:task.projectId,taskId:task.taskId})}>
-                                        {(provided) => {
+                                                                                                                                                       {(provided) => {
                                             return <div
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}

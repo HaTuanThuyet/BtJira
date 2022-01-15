@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Input } from 'antd';
+import { AutoComplete, Input, Popconfirm, Popover } from 'antd';
+import { EditOutlined, DeleteOutlined, CheckCircleOutlined, CheckOutlined } from '@ant-design/icons';
+
 import ReactHtmlParser from 'react-html-parser'
 import { GET_ALL_STATUS_SAGA } from '../../redux/constants/StatusConstants';
 import { GET_ALL_PRIORITY_SAGA } from '../../redux/constants/PriorityConstants';
 import { GET_ALL_TASK_TYPE_SAGA } from '../../redux/constants/TaskTypeConstants';
 import { Editor } from '@tinymce/tinymce-react';
+import Form, { useForm } from 'antd/lib/form/Form';
+import { useRef } from 'react';
+import { Button } from 'antd/lib/radio';
 
 export default function InfoModal(props) {
     const { taskDetailModel } = useSelector(state => state.TaskReducer);
+    const { arrComent } = useSelector(state => state.CommentReducer);
+
     const { arrStatus } = useSelector(state => state.StatusReducer);
     const { arrPriority } = useSelector(state => state.PriorityReducer);
     const { arrTaskType } = useSelector(state => state.TaskTypeReducer);
     const { projectDetail } = useSelector(state => state.ProjectReducer);
     const { memberDetail } = props;
     console.log('projectDetail123', projectDetail);
+    console.log('arrComent123', arrComent);
+
 
     const [visibleEditor, setvisibleEditor] = useState(false);
     const [historyContent, setHistoryContent] = useState(taskDetailModel.description);
     const [content, setContent] = useState(taskDetailModel.description)
+    let [comment, setcomment] = useState(taskDetailModel.lstComment)
+
+
 
 
 
@@ -27,38 +39,44 @@ export default function InfoModal(props) {
         dispatch({ type: GET_ALL_STATUS_SAGA });
         dispatch({ type: GET_ALL_PRIORITY_SAGA });
         dispatch({ type: GET_ALL_TASK_TYPE_SAGA });
+        dispatch({ type: 'GET_ALL_COMMENT_SAGA' })
 
 
     }, [])
 
+
+    const [name, setName] = useState("");
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        //   alert(`The name you entered was: ${name}`);
+        dispatch({
+            type: 'UPDATE_COMMENT_SAGA',
+            taskCommentUpdate: {
+                taskId: taskDetailModel.taskId,
+                contentComment: name
+
+            }
+        })
+    }
+
+
+
     console.log('taskDetailModal', taskDetailModel);
     const renderComment = () => {
-        return <div><Input placeholder="Add Comment" onChange={() => {
-            renderComment()
+        return <form onSubmit={handleSubmit}>
+            <label>
+                <input
+                    type="text"
+                    value={name}
+                    placeholder='Add Comemnt'
 
-        }} />
-            <button className='btn btn-primary m-2' onClick={() => {
-                const action = {
-                    type: 'UPDATE_COMMENT_SAGA',
-                    taskCommentUpdate: {
-                        taskId: taskDetailModel.taskId,
-                        contentComment:handChangeComment()
-
-                    }
-
-                }
-                dispatch(action)
-                setvisibleEditor(false)
-            }}>Save</button>
-            <button className='btn btn-primary m-2' onClick={() => {
-                dispatch({
-                    type: 'HANDLE_CHANGE_POST_API',
-                    actionType: 'CHANGE_TASK_DETAIL',
-                    name: 'description',
-                    value: historyContent
-                })
-                setvisibleEditor(false)
-            }}>Close</button></div>
+                    style={{ width: "300px", border: '2.5px LightBlue solid' }}
+                    onChange={(e) => setName(e.target.value)}
+                />
+            </label>
+            <input type="submit" style={{ background: '#1E90FF', color: 'white', border: 'none', padding: '3px 10px 4px 3px', marginLeft: '0px', textAlign: 'center' }} />
+        </form>
     }
     const renderDescription = () => {
         const jsxDescription = ReactHtmlParser(taskDetailModel.description);
@@ -121,10 +139,7 @@ export default function InfoModal(props) {
             value: value
         })
     }
-    const handChangeComment = (e) => {
-        const {  value } = e.target;
-      
-    }
+
     const renderTimeTracking = () => {
         const { timeTrackingRemaining, timeTrackingSpent } = taskDetailModel;
         const max = Number(timeTrackingRemaining) + Number(timeTrackingSpent);
@@ -202,32 +217,58 @@ export default function InfoModal(props) {
                                         </div>
                                         <div className="comment">
                                             <h6>Comment</h6>
-                                            <div> {renderComment()}</div>
-                                            <div className="lastest-comment">
-                                                <div className="comment-item">
-                                                    <div className="display-comment" style={{ display: 'flex' }}>
-                                                        <div className="avatar">
-                                                            <img src="https://i.ibb.co/7JM1P2r/picke-rick.jpg" alt />
-                                                        </div>
-                                                        <div>
-                                                            <p style={{ marginBottom: 5 }}>
-                                                                Lord Gaben <span>a month ago</span>
-                                                            </p>
-                                                            <p style={{ marginBottom: 5 }}>
-                                                                Lorem ipsum dolor sit amet, consectetur
-                                                                adipisicing elit. Repellendus tempora ex
-                                                                voluptatum saepe ab officiis alias totam ad
-                                                                accusamus molestiae?
-                                                            </p>
-                                                            <div>
-                                                                <span style={{ color: '#929398' }}>Edit</span>
-                                                                •
-                                                                <span style={{ color: '#929398' }}>Delete</span>
-                                                            </div>
-                                                        </div>
+                                            <div> {renderComment()}
+                                                {taskDetailModel.lstComment?.map((lstcm, index) => {
+                                                    return <div>
+                                                        <p key={index}>{lstcm.commentContent} </p>
+                                                        {/* <button className="btn mr-2 btn-primary"
+                                                            onClick={() => { 
+                                                           return 
+                                                            }}>
+                                                            <EditOutlined style={{ fontSize: 10 }} />
+                                                        </button> */}
+                                                        <span className="ml-3" style={{ cursor: 'pointer', color: 'blue' }} onClick={() => {
+                                                           return <p style={{color:'red'}}>qq</p>
+                                                        }}>edit
+
+
+                                                        </span>
+                                                        <Popconfirm
+                                                            title="Are you sure to delete this Project?"
+                                                            onConfirm={() => {
+                                                                dispatch({
+                                                                    type: 'DELETE_COMMET_PROJECT_SAGA',
+                                                                    idComment: lstcm.id
+                                                                });
+                                                            }}
+
+                                                            okText="Yes"
+                                                            cancelText="No"
+                                                        >
+
+                                                            <span className="mr-5 p-3" style={{ cursor: 'pointer', color: 'blueviolet' }} >delete
+
+
+                                                            </span>
+                                                        </Popconfirm>,
+
                                                     </div>
-                                                </div>
+
+
+
+
+
+
+                                                })}
+
                                             </div>
+
+
+
+
+
+
+
                                         </div>
                                     </div>
                                     <div className="col-4">

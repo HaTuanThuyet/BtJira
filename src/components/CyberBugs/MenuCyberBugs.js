@@ -4,32 +4,32 @@ import { NavLink } from 'react-router-dom'
 export default function MenuCyberBugs() {
     return (
         <div className="menu">
-                            <div className="account">
+                            <div className="account col-lg-12 col-xl-12 col-sm-12">
                                 <div className="avatar">
                                     <img src='https://i.ibb.co/6n0hLML/baby-yoda.jpg'alt />
                                 </div>
                                 <div className="account-info">
-                                    <p>ThuyetHa</p>
-                                    <p>Report bugs</p>
+                                    <p className=' col-lg-12 col-xl-12 col-sm-12 col-end'>ThuyetHa</p>
+                                    <p className=' col-lg-12 col-xl-12 col-sm-12'>Report bugs</p>
                                 </div>
                             </div>
-                            <div className="control">
+                            <div className="control col-lg-12 col-xl-12 col-sm-12">
                                 <div>
                                     <i className="fa fa-credit-card mr-2" />
-                                    <NavLink className="text-dark" to='./cyberbugs' activeClassName='active font-weight-boid ' >Cyber Board</NavLink>
+                                    <NavLink className="text-dark  col-lg-12 col-xl-12 col-sm-12" to='./cyberbugs' activeClassName='active font-weight-boid ' >Cyber Board</NavLink>
 
                                 </div>
                                 <div>
                                     <i className="fa fa-cog mr-2" />
-                                    <NavLink className="text-dark" to='./projectmanagement'activeClassName='active font-weight-boid'>Project Management</NavLink>
+                                    <NavLink className="text-dark  col-lg-12 col-xl-12 col-sm-12" to='./projectmanagement'activeClassName='active font-weight-boid'>Project Management</NavLink>
                                 </div>
                                 <div>
                                     <i className="fa fa-cog mr-2" />
-                                    <NavLink className="text-dark" to='./createproject'activeClassName='active font-weight-boid'>Create project</NavLink>
+                                    <NavLink className="text-dark  col-lg-12 col-xl-12 col-sm-12" to='./createproject'activeClassName='active font-weight-boid'>Create project</NavLink>
                                 </div>
                                 <div>
                                     <i className="fa fa-cog mr-2" />
-                                    <NavLink className="text-dark" to='./usermanagement'activeClassName='active font-weight-boid'>User Management</NavLink>
+                                    <NavLink className="text-dark  col-lg-12 col-xl-12 col-sm-12" to='./usermanagement'activeClassName='active font-weight-boid'>User Management</NavLink>
                                 </div>
                             </div>
                             <div className="feature">

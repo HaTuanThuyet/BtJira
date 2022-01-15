@@ -27,6 +27,7 @@ export function* rootSaga() {
             UserSaga.theoDoiGetListUserSaga(),
             UserSaga.theoDoiUpdateUserSaga(),
             UserSaga.theoDoiDeleteUserSaga(),
+            
 
 
 
@@ -44,6 +45,12 @@ export function* rootSaga() {
             CreateTaskSaga.theoDoiCreateTaskSaga(),
             CreateTaskSaga.theoDoiGetTaskDetailSaga(),
             CreateTaskSaga.theoDoiUpdateTaskStatusSaga(),
+            CreateTaskSaga.theoDoicommentTaskSaga(),
+            CreateTaskSaga.theoDoideleteComent(),
+
+            CreateTaskSaga.theoDoigetAllComent(),
+
+
             // CreateTaskSaga.theoDoiUpdateTaskSaga(),
             CreateTaskSaga.theoDoiHandleChangePostApi(),
 

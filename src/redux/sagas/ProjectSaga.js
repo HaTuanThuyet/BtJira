@@ -31,8 +31,8 @@ function* createProjectSaga(action) {
             console.log(data);
 
             // history.push('/projectmanagement');
-            let history = yield select(state => state.HistoryReducer.history)
-            history.push('/projectmanagement');
+            // let history = yield select(state => state.HistoryReducer.history)
+            // history.push('/projectmanagement');
 
         // }
         // let history = yield select(state => state.HistoryReducer.history)
@@ -40,6 +40,8 @@ function* createProjectSaga(action) {
         yield put({
             type: 'HIDE_LOADING'
         })
+        let history = yield select(state => state.HistoryReducer.history)
+        history.push('/projectmanagement');
 
     } catch (error) {
         console.log(error);
@@ -84,13 +86,7 @@ function* getListProjectSaga(action) {
 
 
 
-        if (status = STATUS_CODE.SUCCESS) {
-
-            // lẤY DỮ LIỆU TỪ API VỀ PUT LÊN UI
-
-
-
-        }
+     
 
 
     } catch (error) {
@@ -196,12 +192,14 @@ export function* theoDoiDeleteProjectSaga() {
 
 // Theo Doi GetProjectDetail
 function* getProjectDetailSaga(action) {
-    console.log("actionupdate", action.projectId);
+    // console.log("actionupdate", action.projectId);
+    const {projectId} = action;
+    console.log(projectId);
 
     // Hiển thị
-    // yield put({
-    //     type: "DISPLAY_LOADING"
-    // })
+    yield put({
+        type: "DISPLAY_LOADING"
+    })
     yield delay(500);
 
     try {

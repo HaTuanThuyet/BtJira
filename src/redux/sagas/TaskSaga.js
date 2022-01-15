@@ -6,6 +6,16 @@ import { TaskService } from "../../Pages/Services/TaskService";
 import { STATUS_CODE } from "../../util/constants/settingSystem";
 import { PriorityService } from "../../Pages/Services/PriorityService";
 import { Select } from "antd";
+// const {projectDetail} = useSelector(state => state.ProjectReducer);
+// const dispatch = useDispatch();
+// console.log('projectDetail',projectDetail);
+// useEffect(() => {
+//     const projectId = props.match.params;
+//     dispatch({
+//         type:'GET_PROJECT_DETAIL',
+//         projectId
+//     })
+// },[])
 
 function* createTaskSaga(action) {
     console.log('actiontask', action.taskObject);
@@ -43,7 +53,7 @@ function* updateTaskStatusSaga(action) {
     const { taskStatusUpdate } = action;
     console.log(action);
     try {
-        const { data, status } = yield call(() => TaskService.updateStatusTask(action?.taskStatusUpdate));
+        const { data, status } = yield call(() => TaskService.updateStatusTask(taskStatusUpdate));
         console.log('dataUpdateTassk', data)
         yield put({
             type: 'GET_PROJECT_DETAIL',
@@ -55,6 +65,8 @@ function* updateTaskStatusSaga(action) {
             taskId: taskStatusUpdate.taskId,
 
         })
+        let history = yield select(state => state.HistoryReducer.history)
+        history.push(`/projectdetail/${taskStatusUpdate.projectId}`);
     } catch (er) {
         console.log(er.response.data)
     }
@@ -62,25 +74,93 @@ function* updateTaskStatusSaga(action) {
 export function* theoDoiUpdateTaskStatusSaga() {
     yield takeLatest('UPDATE_TASK_STATUS_SAGA', updateTaskStatusSaga);
 }
+// GET COMMENT
+function* getAllComent() {
+
+    console.log();
+    try {
+        const { data, status } = yield call(() => TaskService.getcomentTask());
+        console.log('datagetAll', data)
+        yield put({
+            type: 'UPDATE_COMMENT',
+            content: data.content
+
+        })
+        yield put({
+            type: 'GET_TASK_DETAIL',
+            taskDetailModel: data.content
+
+        })
 
 
+    } catch (er) {
+        console.log(er.response.data)
+    }
+}
+export function* theoDoigetAllComent() {
+    yield takeLatest('GET_ALL_COMMENT_SAGA', getAllComent);
+}
+function* deleteComent(action) {
+
+    console.log(action);
+    try {
+        const { data, status } = yield call(() => TaskService.deletecomentTask(action.idComment));
+        console.log('DELETE', data.content)
+    
+        yield put({
+            type: 'GET_TASK_DETAIL',
+            taskDetailModel: data.content
+
+        })
+        yield put({
+            type: 'GET_TASK_DETAIL_SAGA',
+            taskId: data.taskId
+
+        })
+        yield put({
+            type: 'UPDATE_COMMENT',
+            content: data.content
+
+        })
+
+    } catch (er) {
+        console.log(er.response.data)
+    }
+}
+export function* theoDoideleteComent() {
+    yield takeLatest('DELETE_COMMET_PROJECT_SAGA', deleteComent);
+}
 
 function* commentTaskSaga(action) {
     const { taskCommentUpdate } = action;
-    console.log(action);
+    console.log('taskCommentUpdate', taskCommentUpdate);
     try {
         const { data, status } = yield call(() => TaskService.commentTask(action?.taskCommentUpdate));
-        console.log('taskCommentUpdate', data)
-        // yield put({
-        //     type: 'GET_PROJECT_DETAIL',
-        //     projectId: taskStatusUpdate.projectId,
+        console.log('taskCommentUpdatesucsess', data)
+        yield put({
+            type: 'GET_TASK_DETAIL',
+            taskDetailModel: data.content.contentComment
 
-        // })
-        // yield put({
-        //     type: 'GET_TASK_DETAIL_SAGA',
-        //     taskId: taskStatusUpdate.taskId,
+        })
+        yield put({
+            type: 'GET_TASK_DETAIL_SAGA',
+            taskId: data.taskId
 
-        // })
+        })
+        yield put({
+            type: 'UPDATE_COMMENT',
+            content: data.content
+
+        })
+        yield put({
+            type: 'COMMMENT',
+            taskDetailModel: data.content
+        })
+        yield put({
+            type: 'CLOSE_DRAWER'
+        })
+        let history = yield select(state => state.HistoryReducer.history)
+        // history.push(`/projectdetail/${taskDetailModel.projectId}`);
     } catch (er) {
         console.log(er.response.data)
     }
@@ -102,8 +182,8 @@ function* handleChangePostApi(action) {
                 name,
                 value
             });
-        }; 
-        break;
+        };
+            break;
         case 'CHANGE_ASSIGNNESS': {
             const { userSelect } = action;
             yield put({
@@ -111,7 +191,7 @@ function* handleChangePostApi(action) {
                 userSelect
             });
         };
-         break;
+            break;
         case 'REMOVE_USER_ASSIGNESS': {
             const { userId } = action;
             yield put({
@@ -119,9 +199,9 @@ function* handleChangePostApi(action) {
                 userId
             });
         };
-         break;
-        default: {break}
-          
+            break;
+        default: { break }
+
     }
     let { taskDetailModel } = yield select(state => state.TaskReducer);
     console.log('taskDetailModel sau khi bieens ddoooxi', taskDetailModel)
