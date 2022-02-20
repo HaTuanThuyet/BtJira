@@ -38,14 +38,15 @@ export default function DragAndDropDnd() {
         if (destination.index === source.index && destination.draggableId === source.draggableId) {
             return;
         }
-        let itemCopy = { ...state[source.draggableId].items[source.index]};
+        let itemCopy = { ...state[source.draggableId]?.items[source.index] };
         // droppable bawts ddau keo
-        let index = state[source.droppableId].items.findIndex(item => item.id !== itemCopy.id);
-        state[source.droppableId].items.splice(index,1);
+        let index = state[source.droppableId]?.items.findIndex(item => item.id !== itemCopy.id);
+        state[source.droppableId]?.items.splice(index, 1);
         // drop tha vao
-        let dropDestination = state[destination.droppableId].items;
-        dropDestination.splice(destination.index, 0, itemCopy);
+        let dropDestination = state[destination.droppableId]?.items;
+        dropDestination?.splice(destination.index, 0, itemCopy);
         setState(state);
+        console.log(dropDestination);
 
     }
     return (
@@ -67,7 +68,7 @@ export default function DragAndDropDnd() {
                                                         ref={provided.innerRef}{...provided.dragHandleProps}
                                                         {...provided.draggableProps}
                                                         className='mt-2 p-3 bg-white text-center'>
-                                                        {item.taskName}
+                                                        {/* {item.taskName} */}
                                                     </div>
                                                 }}
                                             </Draggable>

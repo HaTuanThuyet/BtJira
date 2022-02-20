@@ -303,11 +303,7 @@ const frmCreateTask = withFormik({
 
     displayName: 'CreateTaskForm',
 })(FormCreateTask);
-// / const { arrrProject } = useSelector(state => state.ProjectCyberBugReducer);
-// const { arrTaskType } = useSelector(state => state.TaskTypeReducer);
-// const { arrPriority } = useSelector(state => state.PriorityReducer);
-// const { userSearch } = useSelector(state => state.UserLoginCyberReducer);
-// const { arrStatus } = useSelector(state => state.StatusReducer);
+
 const mapStateToProps = (state)=>{
     return {
         arrrProject:state.ProjectCyberBugReducer.arrrProject,
